@@ -1,0 +1,41 @@
+<button class="btn btn-primary" (click)="getBasket()">Basket</button>
+<p>Basket:</p>
+<ul *ngIf="basket">
+  <li *ngFor="let item of basket">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getDeliveries()">Deliveries</button>
+<p>Deliveries:</p>
+<ul *ngIf="deliveries">
+  <li *ngFor="let item of deliveries">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getOrders()">Orders</button>
+<p>Orders:</p>
+<ul *ngIf="deliveries">
+  <li *ngFor="let item of orders">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getPayments()">Payments</button>
+<p>Payments:</p>
+<ul *ngIf="payments">
+  <li *ngFor="let item of payments">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getRestaurants()">Restaurants</button>
+<p>Restaurants:</p>
+<ul *ngIf="restaurants">
+  <li *ngFor="let item of restaurants">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getReviews()">Reviews</button>
+<p>Reviews:</p>
+<ul *ngIf="reviews">
+  <li *ngFor="let item of reviews">{{ item }}</li>
+</ul>
+
+<button class="btn btn-primary" (click)="getUsers()">Users</button>
+<p>Users:</p>
+<ul *ngIf="users">
+  <li *ngFor="let item of users">{{ item }}</li>
+</ul>

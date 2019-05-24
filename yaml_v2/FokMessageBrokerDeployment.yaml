@@ -1,0 +1,165 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fok-deployment-messagebroker
+  labels:
+    app: fok-messagebroker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fok-messagebroker
+  template:
+    metadata:
+      labels:
+        app: fok-messagebroker
+    spec:
+      containers:      
+      - name: messagebroker
+        image: caretro/foodonkontainers:broker_v6
+        ports:
+        - containerPort: 80
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Production"
+      imagePullSecrets:
+      - name: regcredcaretro
+
+---
+kind: Service
+apiVersion: v1
+metadata:  
+  name: reti-lab-foodonkontainers-messagebroker
+spec:
+  type: NodePort
+  selector:
+    app: fok-messagebroker
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30082
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+         app: rabbitmq
+    spec:
+      containers:
+      - image: rabbitmq:3.8.0-beta.3-management-alpine
+        name: rabbitmq
+        ports:
+        - containerPort: 15672
+        - containerPort: 5672
+        volumeMounts:
+        - mountPath: /etc/rabbitmq
+          name: rabbit-mq-data
+      restartPolicy: Always
+      hostname: rabbitmq
+      volumes:
+      - name: rabbit-mq-data
+        persistentVolumeClaim:
+          claimName: rabbit-mq-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: rabbitmq
+spec:
+  type: NodePort
+  # clusterIP: None  # We need a headless service to allow the pods to discover each
+  ports:           # other during autodiscover phase for cluster creation.
+   - name: http    # A ClusterIP will prevent resolving dns requests for other pods
+     protocol: TCP # under the same service.
+     port: 15672
+     targetPort: 15672
+     nodePort: 30080
+   - name: amqp
+     protocol: TCP
+     port: 5672
+     targetPort: 5672
+     nodePort: 30081
+  selector:
+    app: rabbitmq
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: rabbit-mq-data
+  name: rabbit-mq-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mongo
+  name: mongo
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo    
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: mongo
+  name: mongo-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      containers:
+      - image: mongo
+        name: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+        volumeMounts:
+        - mountPath: /etc/mongo
+          name: mongo-data
+      restartPolicy: Always
+      hostname: mongo
+      volumes:
+      - name: mongo-data
+        persistentVolumeClaim:
+          claimName: mongo-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: mongo-data
+  name: mongo-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

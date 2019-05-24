@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "c04a7693-99af-46b0-86a6-cb538aad4d08",
+		"name": "Restaurants",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add restaurant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Name\": \"Burbee\",\n    \"Address\": \"via dante 7\",\n    \"Email\": \"burbee@reti.it\",\n    \"PhoneNumber\": 0331123456,\n    \"IdRestaurantType\": 1,\n    \"Latitude\": 0,\n    \"Longitude\": 0,\n    \"Enabled\": true\n}"
+				},
+				"url": {
+					"raw": "{{RestaurantUrl}}/api/restaurants/add",
+					"host": [
+						"{{RestaurantUrl}}"
+					],
+					"path": [
+						"api",
+						"restaurants",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add MenuItem",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"IdRestaurant\": 1,\n    \"Name\": \"Panino kobe\",\n    \"Description\": \"carne massaggiata\",\n    \"IdDishType\": 1,\n    \"Price\": 15.0\n}"
+				},
+				"url": {
+					"raw": "{{RestaurantUrl}}/api/restaurantsmenu/new",
+					"host": [
+						"{{RestaurantUrl}}"
+					],
+					"path": [
+						"api",
+						"restaurantsmenu",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit MenuItem",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"Id\": 1,\n\t\"IdRestaurant\": 1,\n    \"Name\": \"Panino kobe\",\n    \"Description\": \"carne massaggiata\",\n    \"IdDishType\": 1,\n    \"Price\": 16.5\n}"
+				},
+				"url": {
+					"raw": "{{RestaurantUrl}}/api/restaurantsmenu/update",
+					"host": [
+						"{{RestaurantUrl}}"
+					],
+					"path": [
+						"api",
+						"restaurantsmenu",
+						"update"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

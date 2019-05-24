@@ -1,0 +1,100 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: mssql-restaurants-db
+spec:
+  serviceName: mssql-restaurants-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mssql-restaurants-db
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: mssql-restaurants-db
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: 'Y'
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD
+        volumeMounts:
+        - name: mssqldb
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: mssqldb
+        persistentVolumeClaim:
+          claimName: mssql-restaurants-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-restaurants-db
+spec:
+  selector:
+    app: mssql-restaurants-db
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mssql-restaurants-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fok-deployment-restaurants
+  labels:
+    app: fok-restaurants
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fok-restaurants
+  template:
+    metadata:
+      labels:
+        app: fok-restaurants
+    spec:
+      containers:      
+      - name: basketapi
+        image: caretro/foodonkontainers:restaurantsapi_v3
+        ports:
+        - containerPort: 80
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Production"
+      imagePullSecrets:
+      - name: regcredcaretro
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: reti-lab-foodonkontainers-restaurants-api
+  name: reti-lab-foodonkontainers-restaurants-api
+spec:
+  selector:
+    app: fok-restaurants
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+

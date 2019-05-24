@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "25e62eeb-e4e3-44dd-8e4a-37f8543c04d7",
+		"name": "Orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRestaurantsOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/restaurant/1",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"restaurant",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUserOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/user/1",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrder",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/1",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "96e6ae58-bb77-485b-a2e0-0f03eb244294",
+						"exec": [
+							"var today = new Date();\r",
+							"today.setHours(today.getHours() + 1);\r",
+							"pm.environment.set(\"inAnHour\", today.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idRestaurant\": 1,\n    \"restaurantName\": \"Burbee\",\n    \"idUser\": 1,\n    \"userName\": \"caretro\",\n    \"price\": 32.5,\n    \"restaurantAddress\": \"via dante 7\",\n    \"deliveryAddress\": \"via dante 6\",\n    \"deliveryRequestedDate\": \"{{inAnHour}}\",\n    \"orderItem\": [\n        {\n            \"idMenuItem\": 1,\n            \"menuItemName\": \"panino kobe\",\n            \"price\": 15,\n            \"quantity\": 2\n        },\n        {\n            \"idMenuItem\": 2,\n            \"menuItemName\": \"coca cola\",\n            \"price\": 2.5,\n            \"quantity\": 1\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/add",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateOrder",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/update/order/1/2",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"update",
+						"order",
+						"1",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteOrder",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{OrderUrl}}/api/orders/delete/1",
+					"host": [
+						"{{OrderUrl}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"delete",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
